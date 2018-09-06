@@ -1,26 +1,23 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Text;
+﻿using ChakraCore.NET.DebugAdapter.VSCode;
 using ChakraCore.NET.Hosting;
 using ChakraCore.NET.Plugin.Common;
-using ChakraCore.NET.DebugAdapter.VSCode;
+using System;
+using System.IO;
+using System.Text;
 using System.Threading;
 
 namespace RunScript
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            CancellationTokenSource debugCTS=null;
-            ScriptConfig config=null;
+            CancellationTokenSource debugCTS = null;
+            ScriptConfig config = null;
             JSApp app = null;
             if (args.Length == 0)
             {
-                showUsage();
+                ShowUsage();
                 return;
             }
             else
@@ -33,13 +30,13 @@ namespace RunScript
                 {
                     Console.WriteLine("invalid parameter");
                     Console.WriteLine(ex.Message);
-                    showUsage();
+                    ShowUsage();
                     Console.WriteLine("Press any key to exit");
                     Console.Read();
                     return;
                 }
-                JavaScriptHostingConfig hostingConfig = new JavaScriptHostingConfig();
-                
+                var hostingConfig = new JavaScriptHostingConfig();
+
                 hostingConfig
                     .AddPlugin<SysInfoPluginInstaller>()
                     .AddModuleFolder(config.RootFolder)
@@ -52,24 +49,24 @@ namespace RunScript
                     debugCTS = new CancellationTokenSource();
                     var adapter = new VSCodeDebugAdapter(true);//wait for launch command from VSCode, user can reconnect with attach command after launch debug is done
                     //var adapter = new VSCodeDebugAdapter(false);//start program, wait for attach command from VSCode
-                    adapter.OnLaunch += (sender,arguments)=> { Console.WriteLine($"Launch requested,arguments={arguments}"); };
-                    adapter.OnAttach+=(sender,arguments) => { Console.WriteLine($"Attach requested,arguments={arguments}"); };
+                    adapter.OnLaunch += (sender, arguments) => { Console.WriteLine($"Launch requested,arguments={arguments}"); };
+                    adapter.OnAttach += (sender, arguments) => { Console.WriteLine($"Attach requested,arguments={arguments}"); };
                     adapter.OnAdapterMessage += (sender, msg) => { Console.WriteLine(msg); };
                     adapter.OnStatusChang += (sender, e) => { Console.WriteLine(e); };
                     adapter.RunServer(3515, debugCTS.Token);
                     //adapter.RunClient(3515, debugCTS.Token);
                     hostingConfig.DebugAdapter = adapter;
                 }
-                
+
                 if (config.IsModule)
                 {
-                    app=JavaScriptHosting.Default.GetModuleClass<JSApp>(config.FileName, config.ModuleClass, hostingConfig);
+                    app = JavaScriptHosting.Default.GetModuleClass<JSApp>(config.FileName, config.ModuleClass, hostingConfig);
                     app.EntryPoint = config.ModuleEntryPoint;
                     app.Run();
                 }
                 else
                 {
-                    string script = File.ReadAllText(config.File);
+                    var script = File.ReadAllText(config.File);
                     Console.WriteLine("---Script Start---");
                     JavaScriptHosting.Default.RunScript(script, hostingConfig);
                 }
@@ -79,8 +76,8 @@ namespace RunScript
                 while (true)
                 {
                     Console.WriteLine("input \"exit\" to exit, anything else to run the module again");
-                    string command = Console.ReadLine();
-                    if (command.ToLower()=="exit")
+                    var command = Console.ReadLine();
+                    if (command.ToLower() == "exit")
                     {
                         break;
                     }
@@ -92,18 +89,16 @@ namespace RunScript
                 Console.WriteLine("Press Enter to exit");
                 Console.Read();
             }
-            
-            
 
-            
+
+
+
             debugCTS?.Cancel();
         }
 
-        
-
-        static void showUsage()
+        private static void ShowUsage()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendJoin(
                 Environment.NewLine
                 , "RunScript useage:"

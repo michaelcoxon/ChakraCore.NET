@@ -10,7 +10,7 @@ namespace ChakraCore.NET
             {
                 return;
             }
-            service.RegisterConverter<Action>(toJSMethod, fromJSMethod, false);
+            service.RegisterConverter<Action>(ToJSMethod, FromJSMethod, false);
         }
 
 
@@ -29,15 +29,15 @@ namespace ChakraCore.NET
 
         }
 
-        public static void RegisterMethodConverter<T1>(this IJSValueConverterService service, params Type[] argTypes)
+        public static void RegisterMethodConverter(this IJSValueConverterService service, Delegate action)
         {
-            var actionType = typeof(Action<>).MakeGenericType(argTypes);
+            var actionType = action.GetType();
 
             if (service.CanConvert(actionType))
             {
                 return;
             }
-            service.RegisterConverter(actionType, toJSMethod, fromJSMethod, false);
+            service.RegisterConverter(actionType, ToJSMethod, FromJSMethod, false);
         }
 
         public static void RegisterMethodConverter<T1>(this IJSValueConverterService service)
@@ -46,7 +46,7 @@ namespace ChakraCore.NET
             {
                 return;
             }
-            service.RegisterConverter<Action<T1>>(toJSMethod<T1>, fromJSMethod<T1>, false);
+            service.RegisterConverter<Action<T1>>(ToJSMethod<T1>, FromJSMethod<T1>, false);
         }
 
 
@@ -75,7 +75,7 @@ namespace ChakraCore.NET
             {
                 return;
             }
-            service.RegisterConverter<Action<T1, T2>>(toJSMethod<T1, T2>, fromJSMethod<T1, T2>, false);
+            service.RegisterConverter<Action<T1, T2>>(ToJSMethod<T1, T2>, FromJSMethod<T1, T2>, false);
         }
 
 
@@ -104,7 +104,7 @@ namespace ChakraCore.NET
             {
                 return;
             }
-            service.RegisterConverter<Action<T1, T2, T3>>(toJSMethod<T1, T2, T3>, fromJSMethod<T1, T2, T3>, false);
+            service.RegisterConverter<Action<T1, T2, T3>>(ToJSMethod<T1, T2, T3>, FromJSMethod<T1, T2, T3>, false);
         }
 
 
@@ -133,7 +133,7 @@ namespace ChakraCore.NET
             {
                 return;
             }
-            service.RegisterConverter<Action<T1, T2, T3, T4>>(toJSMethod<T1, T2, T3, T4>, fromJSMethod<T1, T2, T3, T4>, false);
+            service.RegisterConverter<Action<T1, T2, T3, T4>>(ToJSMethod<T1, T2, T3, T4>, FromJSMethod<T1, T2, T3, T4>, false);
         }
 
 
@@ -162,7 +162,7 @@ namespace ChakraCore.NET
             {
                 return;
             }
-            service.RegisterConverter<Action<T1, T2, T3, T4, T5>>(toJSMethod<T1, T2, T3, T4, T5>, fromJSMethod<T1, T2, T3, T4, T5>, false);
+            service.RegisterConverter<Action<T1, T2, T3, T4, T5>>(ToJSMethod<T1, T2, T3, T4, T5>, FromJSMethod<T1, T2, T3, T4, T5>, false);
         }
 
 
@@ -191,7 +191,7 @@ namespace ChakraCore.NET
             {
                 return;
             }
-            service.RegisterConverter<Action<T1, T2, T3, T4, T5, T6>>(toJSMethod<T1, T2, T3, T4, T5, T6>, fromJSMethod<T1, T2, T3, T4, T5, T6>, false);
+            service.RegisterConverter<Action<T1, T2, T3, T4, T5, T6>>(ToJSMethod<T1, T2, T3, T4, T5, T6>, FromJSMethod<T1, T2, T3, T4, T5, T6>, false);
         }
 
 
@@ -220,7 +220,7 @@ namespace ChakraCore.NET
             {
                 return;
             }
-            service.RegisterConverter<Action<T1, T2, T3, T4, T5, T6, T7>>(toJSMethod<T1, T2, T3, T4, T5, T6, T7>, fromJSMethod<T1, T2, T3, T4, T5, T6, T7>, false);
+            service.RegisterConverter<Action<T1, T2, T3, T4, T5, T6, T7>>(ToJSMethod<T1, T2, T3, T4, T5, T6, T7>, FromJSMethod<T1, T2, T3, T4, T5, T6, T7>, false);
         }
 
 

@@ -67,6 +67,16 @@ namespace ChakraCore.NET
             ;
         }
 
+        public void WriteProperty(JavaScriptValue target, string id, Type type, object value)
+        {
+            contextSwitch.With(() =>
+            {
+                target.SetProperty(JavaScriptPropertyId.FromString(id), converter.ToJSValue(type, value), true);
+            });
+
+            ;
+        }
+
         public void WriteProperty<T>(JavaScriptValue target, string id, T value)
         {
             contextSwitch.With(() =>
@@ -152,5 +162,6 @@ namespace ChakraCore.NET
                 throw new JavaScriptFatalException(JavaScriptErrorCode.Fatal, message);
             }
         }
+
     }
 }

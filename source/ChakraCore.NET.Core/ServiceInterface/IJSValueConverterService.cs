@@ -57,6 +57,7 @@ namespace ChakraCore.NET
         /// <exception cref="ArgumentException">If the type is already registered and <paramref name="throwIfExists"/> is true </exception>
         void RegisterConverter(Type type, toJSValueDelegate toJSValue, fromJSValueDelegate fromJSValue, bool throwIfExists = true);
 
+
         /// <summary>
         /// Register a converter
         /// </summary>
@@ -66,6 +67,15 @@ namespace ChakraCore.NET
         /// <param name="throwIfExists">Throwss an exception of the type is already registered</param>
         /// <exception cref="ArgumentException">If the type is already registered and <paramref name="throwIfExists"/> is true </exception>
         void RegisterConverter<T>(toJSValueDelegate<T> toJSValue, fromJSValueDelegate<T> fromJSValue, bool throwIfExists = true);
+
+        /// <summary>
+        /// Convert a user object from a <see cref="JavaScriptValue"/>
+        /// </summary>
+        /// <typeparam name="T">Type of user object</typeparam>
+        /// <param name="value">the value to convert from</param>
+        /// <returns>a instance of user object</returns>
+        object FromJSValue(Type type, JavaScriptValue javaScriptValue);
+
         /// <summary>
         /// Convert a user object from a <see cref="JavaScriptValue"/>
         /// </summary>
@@ -91,6 +101,7 @@ namespace ChakraCore.NET
 
 
         bool CanConvert(Type t);
-       
+
+        JavaScriptValue ToJSValue(Type type, object value);
     }
 }

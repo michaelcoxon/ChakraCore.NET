@@ -2,12 +2,14 @@
 
 using ChakraCore.NET.API;
 using System;
+using System.Collections.Generic;
+
 namespace ChakraCore.NET
 {
     public static partial class JSValueConverterHelper
     {
 
-        private static JavaScriptValue toJSMethod(IServiceNode node, Action a)
+        private static JavaScriptValue ToJSMethod(IServiceNode node, Action a)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
@@ -28,76 +30,59 @@ namespace ChakraCore.NET
             return jsValueService.CreateFunction(f, IntPtr.Zero);
         }
 
-        private static JavaScriptValue toJSMethod(IServiceNode node, Action a)
-        {
-            var converter = node.GetService<IJSValueConverterService>();
-            var jsValueService = node.GetService<IJSValueService>();
-            JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
-            {
-                if (argumentCount != 1)
-                {
-                    throw new InvalidOperationException("call from javascript did not pass enough parameters");
-                }
-
-
-
-                a();
-
-                return jsValueService.JSValue_Undefined;
-            };
-
-            return jsValueService.CreateFunction(f, IntPtr.Zero);
-        }
-
-
-        private static Action fromJSMethod(IServiceNode node, JavaScriptValue value)
+        private static Action FromJSMethod(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
-            Action result = () =>
-              {
+            void result()
+            {
+                node.WithContext(() =>
+                {
+                    var caller = node.GetService<ICallContextService>().Caller;
 
+                    value.CallFunction(caller);
 
-
-
-                  node.WithContext(() =>
-                  {
-                      var caller = node.GetService<ICallContextService>().Caller;
-
-                      value.CallFunction(caller);
-
-                  });
-                  GC.KeepAlive(stub);//keep referenced javascript value alive
-              };
+                });
+                GC.KeepAlive(stub);//keep referenced javascript value alive
+            }
             return result;
         }
 
-        private static JavaScriptValue toJSMethod(IServiceNode node, object a)
+        private static JavaScriptValue ToJSMethod(IServiceNode node, object a)
         {
-            var action =(Delegate)a;
+            var action = (Delegate)a;
+            var parameters = action.Method.GetParameters();
+
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
-            JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
+            JavaScriptValue f(JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments, ushort argumentCount, IntPtr callbackData)
             {
-                if (argumentCount != action.)
+                if (argumentCount != parameters.Length + 1)
                 {
                     throw new InvalidOperationException("call from javascript did not pass enough parameters");
                 }
-                var para1 = converter.FromJSValue<T1>(arguments[1]);
-                arguments[1].AddRef();
+                var args = new List<object>();
 
-                a(para1);
-                arguments[1].Release();
+                for (var i = 0; i < parameters.Length; i++)
+                {
+                    args.Add(converter.FromJSValue(parameters[i].ParameterType, arguments[i + 1]));
+                    arguments[i + 1].AddRef();
+                }
+
+                action.DynamicInvoke(args.ToArray());
+
+                for (var i = 0; i < parameters.Length; i++)
+                {
+                    arguments[i + 1].Release();
+                }
                 return jsValueService.JSValue_Undefined;
-            };
+            }
 
             return jsValueService.CreateFunction(f, IntPtr.Zero);
         }
 
-        private static JavaScriptValue toJSMethod<T1>(IServiceNode node, Action<T1> a)
+        private static JavaScriptValue ToJSMethod<T1>(IServiceNode node, Action<T1> a)
         {
-            toJSMethod.GetParameters();
-
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
@@ -118,7 +103,7 @@ namespace ChakraCore.NET
         }
 
 
-        private static Action<T1> fromJSMethod<T1>(IServiceNode node, JavaScriptValue value)
+        private static Action<T1> FromJSMethod<T1>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
@@ -142,7 +127,7 @@ namespace ChakraCore.NET
 
 
 
-        private static JavaScriptValue toJSMethod<T1, T2>(IServiceNode node, Action<T1, T2> a)
+        private static JavaScriptValue ToJSMethod<T1, T2>(IServiceNode node, Action<T1, T2> a)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
@@ -167,7 +152,7 @@ namespace ChakraCore.NET
         }
 
 
-        private static Action<T1, T2> fromJSMethod<T1, T2>(IServiceNode node, JavaScriptValue value)
+        private static Action<T1, T2> FromJSMethod<T1, T2>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
@@ -188,13 +173,13 @@ namespace ChakraCore.NET
                        p2.Release();
                    });
                    GC.KeepAlive(stub);//keep referenced javascript value alive
-              };
+               };
             return result;
         }
 
 
 
-        private static JavaScriptValue toJSMethod<T1, T2, T3>(IServiceNode node, Action<T1, T2, T3> a)
+        private static JavaScriptValue ToJSMethod<T1, T2, T3>(IServiceNode node, Action<T1, T2, T3> a)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
@@ -222,7 +207,7 @@ namespace ChakraCore.NET
         }
 
 
-        private static Action<T1, T2, T3> fromJSMethod<T1, T2, T3>(IServiceNode node, JavaScriptValue value)
+        private static Action<T1, T2, T3> FromJSMethod<T1, T2, T3>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
@@ -246,13 +231,13 @@ namespace ChakraCore.NET
                         p3.Release();
                     });
                     GC.KeepAlive(stub);//keep referenced javascript value alive
-              };
+                };
             return result;
         }
 
 
 
-        private static JavaScriptValue toJSMethod<T1, T2, T3, T4>(IServiceNode node, Action<T1, T2, T3, T4> a)
+        private static JavaScriptValue ToJSMethod<T1, T2, T3, T4>(IServiceNode node, Action<T1, T2, T3, T4> a)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
@@ -283,7 +268,7 @@ namespace ChakraCore.NET
         }
 
 
-        private static Action<T1, T2, T3, T4> fromJSMethod<T1, T2, T3, T4>(IServiceNode node, JavaScriptValue value)
+        private static Action<T1, T2, T3, T4> FromJSMethod<T1, T2, T3, T4>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
@@ -310,13 +295,13 @@ namespace ChakraCore.NET
                          p4.Release();
                      });
                      GC.KeepAlive(stub);//keep referenced javascript value alive
-              };
+                 };
             return result;
         }
 
 
 
-        private static JavaScriptValue toJSMethod<T1, T2, T3, T4, T5>(IServiceNode node, Action<T1, T2, T3, T4, T5> a)
+        private static JavaScriptValue ToJSMethod<T1, T2, T3, T4, T5>(IServiceNode node, Action<T1, T2, T3, T4, T5> a)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
@@ -350,7 +335,7 @@ namespace ChakraCore.NET
         }
 
 
-        private static Action<T1, T2, T3, T4, T5> fromJSMethod<T1, T2, T3, T4, T5>(IServiceNode node, JavaScriptValue value)
+        private static Action<T1, T2, T3, T4, T5> FromJSMethod<T1, T2, T3, T4, T5>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
@@ -380,13 +365,13 @@ namespace ChakraCore.NET
                           p5.Release();
                       });
                       GC.KeepAlive(stub);//keep referenced javascript value alive
-              };
+                  };
             return result;
         }
 
 
 
-        private static JavaScriptValue toJSMethod<T1, T2, T3, T4, T5, T6>(IServiceNode node, Action<T1, T2, T3, T4, T5, T6> a)
+        private static JavaScriptValue ToJSMethod<T1, T2, T3, T4, T5, T6>(IServiceNode node, Action<T1, T2, T3, T4, T5, T6> a)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
@@ -423,7 +408,7 @@ namespace ChakraCore.NET
         }
 
 
-        private static Action<T1, T2, T3, T4, T5, T6> fromJSMethod<T1, T2, T3, T4, T5, T6>(IServiceNode node, JavaScriptValue value)
+        private static Action<T1, T2, T3, T4, T5, T6> FromJSMethod<T1, T2, T3, T4, T5, T6>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
@@ -456,13 +441,13 @@ namespace ChakraCore.NET
                            p6.Release();
                        });
                        GC.KeepAlive(stub);//keep referenced javascript value alive
-              };
+                   };
             return result;
         }
 
 
 
-        private static JavaScriptValue toJSMethod<T1, T2, T3, T4, T5, T6, T7>(IServiceNode node, Action<T1, T2, T3, T4, T5, T6, T7> a)
+        private static JavaScriptValue ToJSMethod<T1, T2, T3, T4, T5, T6, T7>(IServiceNode node, Action<T1, T2, T3, T4, T5, T6, T7> a)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
@@ -502,7 +487,7 @@ namespace ChakraCore.NET
         }
 
 
-        private static Action<T1, T2, T3, T4, T5, T6, T7> fromJSMethod<T1, T2, T3, T4, T5, T6, T7>(IServiceNode node, JavaScriptValue value)
+        private static Action<T1, T2, T3, T4, T5, T6, T7> FromJSMethod<T1, T2, T3, T4, T5, T6, T7>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var stub = node.GetService<IGCSyncService>().CreateJsGCWrapper(value);
@@ -538,7 +523,7 @@ namespace ChakraCore.NET
                             p7.Release();
                         });
                         GC.KeepAlive(stub);//keep referenced javascript value alive
-              };
+                    };
             return result;
         }
 
