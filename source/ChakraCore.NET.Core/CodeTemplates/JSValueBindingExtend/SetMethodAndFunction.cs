@@ -8,13 +8,13 @@ public partial class JSValueBinding
 {
         public void SetMethod(string name,Action a)
         {
-            converter.RegisterMethodConverter();
-            valueService.WriteProperty<Action>(jsValue,name, a);
+            Converter.RegisterMethodConverter();
+            ValueService.WriteProperty<Action>(_jsValue,name, a);
         }
 
         public void SetFunction<TResult>(string name,Func<TResult> callback, Func<TResult> constructCallback=null)
         {
-            converter.RegisterFunctionConverter<TResult>();
+            Converter.RegisterFunctionConverter<TResult>();
             if (callback==null &&constructCallback==null)
             {
                 throw new ArgumentException("callback and constructCallback cannot both be null");
@@ -46,20 +46,65 @@ public partial class JSValueBinding
                    }
                    return result;
                };
-            valueService.WriteProperty<Func<bool, TResult>>(jsValue,name, tmp);
+            ValueService.WriteProperty<Func<bool, TResult>>(_jsValue,name, tmp);
+        }
+
+
+        public void SetMethod(string name, Delegate a)
+        {
+            var type = a.GetType();
+            Converter.RegisterMethodConverter(type,a);
+            ValueService.WriteProperty(_jsValue, name, type, a);
+        }
+
+        public void SetFunction<T1, TResult>(string name, Func<T1, TResult> callback, Func<T1, TResult> constructCallback = null)
+        {
+            Converter.RegisterFunctionConverter<T1, TResult>();
+            if (callback == null && constructCallback == null)
+            {
+                throw new ArgumentException("callback and constructCallback cannot both be null");
+            }
+            Func<bool, T1, TResult> tmp = (isConstruct, para1) =>
+            {
+                TResult result;
+                if (isConstruct)
+                {
+                    if (constructCallback == null)
+                    {
+                        throw new NotImplementedException(@"function {name} does not support construct call");
+                    }
+                    else
+                    {
+                        result = constructCallback(para1);
+                    }
+                }
+                else
+                {
+                    if (callback == null)
+                    {
+                        throw new NotImplementedException(@"function {name} does not support direct call");
+                    }
+                    else
+                    {
+                        result = callback(para1);
+                    }
+                }
+                return result;
+            };
+            ValueService.WriteProperty<Func<bool, T1, TResult>>(_jsValue, name, tmp);
         }
 
 
 
         public void SetMethod<T1>(string name,Action<T1> a)
         {
-            converter.RegisterMethodConverter<T1>();
-            valueService.WriteProperty<Action<T1>>(jsValue,name, a);
+            Converter.RegisterMethodConverter<T1>();
+            ValueService.WriteProperty<Action<T1>>(_jsValue,name, a);
         }
 
         public void SetFunction<T1,TResult>(string name,Func<T1,TResult> callback, Func<T1,TResult> constructCallback=null)
         {
-            converter.RegisterFunctionConverter<T1,TResult>();
+            Converter.RegisterFunctionConverter<T1,TResult>();
             if (callback==null &&constructCallback==null)
             {
                 throw new ArgumentException("callback and constructCallback cannot both be null");
@@ -91,20 +136,20 @@ public partial class JSValueBinding
                    }
                    return result;
                };
-            valueService.WriteProperty<Func<bool, T1,TResult>>(jsValue,name, tmp);
+            ValueService.WriteProperty<Func<bool, T1,TResult>>(_jsValue,name, tmp);
         }
 
 
 
         public void SetMethod<T1,T2>(string name,Action<T1,T2> a)
         {
-            converter.RegisterMethodConverter<T1,T2>();
-            valueService.WriteProperty<Action<T1,T2>>(jsValue,name, a);
+            Converter.RegisterMethodConverter<T1,T2>();
+            ValueService.WriteProperty<Action<T1,T2>>(_jsValue,name, a);
         }
 
         public void SetFunction<T1,T2,TResult>(string name,Func<T1,T2,TResult> callback, Func<T1,T2,TResult> constructCallback=null)
         {
-            converter.RegisterFunctionConverter<T1,T2,TResult>();
+            Converter.RegisterFunctionConverter<T1,T2,TResult>();
             if (callback==null &&constructCallback==null)
             {
                 throw new ArgumentException("callback and constructCallback cannot both be null");
@@ -136,20 +181,20 @@ public partial class JSValueBinding
                    }
                    return result;
                };
-            valueService.WriteProperty<Func<bool, T1,T2,TResult>>(jsValue,name, tmp);
+            ValueService.WriteProperty<Func<bool, T1,T2,TResult>>(_jsValue,name, tmp);
         }
 
 
 
         public void SetMethod<T1,T2,T3>(string name,Action<T1,T2,T3> a)
         {
-            converter.RegisterMethodConverter<T1,T2,T3>();
-            valueService.WriteProperty<Action<T1,T2,T3>>(jsValue,name, a);
+            Converter.RegisterMethodConverter<T1,T2,T3>();
+            ValueService.WriteProperty<Action<T1,T2,T3>>(_jsValue,name, a);
         }
 
         public void SetFunction<T1,T2,T3,TResult>(string name,Func<T1,T2,T3,TResult> callback, Func<T1,T2,T3,TResult> constructCallback=null)
         {
-            converter.RegisterFunctionConverter<T1,T2,T3,TResult>();
+            Converter.RegisterFunctionConverter<T1,T2,T3,TResult>();
             if (callback==null &&constructCallback==null)
             {
                 throw new ArgumentException("callback and constructCallback cannot both be null");
@@ -181,20 +226,20 @@ public partial class JSValueBinding
                    }
                    return result;
                };
-            valueService.WriteProperty<Func<bool, T1,T2,T3,TResult>>(jsValue,name, tmp);
+            ValueService.WriteProperty<Func<bool, T1,T2,T3,TResult>>(_jsValue,name, tmp);
         }
 
 
 
         public void SetMethod<T1,T2,T3,T4>(string name,Action<T1,T2,T3,T4> a)
         {
-            converter.RegisterMethodConverter<T1,T2,T3,T4>();
-            valueService.WriteProperty<Action<T1,T2,T3,T4>>(jsValue,name, a);
+            Converter.RegisterMethodConverter<T1,T2,T3,T4>();
+            ValueService.WriteProperty<Action<T1,T2,T3,T4>>(_jsValue,name, a);
         }
 
         public void SetFunction<T1,T2,T3,T4,TResult>(string name,Func<T1,T2,T3,T4,TResult> callback, Func<T1,T2,T3,T4,TResult> constructCallback=null)
         {
-            converter.RegisterFunctionConverter<T1,T2,T3,T4,TResult>();
+            Converter.RegisterFunctionConverter<T1,T2,T3,T4,TResult>();
             if (callback==null &&constructCallback==null)
             {
                 throw new ArgumentException("callback and constructCallback cannot both be null");
@@ -226,20 +271,20 @@ public partial class JSValueBinding
                    }
                    return result;
                };
-            valueService.WriteProperty<Func<bool, T1,T2,T3,T4,TResult>>(jsValue,name, tmp);
+            ValueService.WriteProperty<Func<bool, T1,T2,T3,T4,TResult>>(_jsValue,name, tmp);
         }
 
 
 
         public void SetMethod<T1,T2,T3,T4,T5>(string name,Action<T1,T2,T3,T4,T5> a)
         {
-            converter.RegisterMethodConverter<T1,T2,T3,T4,T5>();
-            valueService.WriteProperty<Action<T1,T2,T3,T4,T5>>(jsValue,name, a);
+            Converter.RegisterMethodConverter<T1,T2,T3,T4,T5>();
+            ValueService.WriteProperty<Action<T1,T2,T3,T4,T5>>(_jsValue,name, a);
         }
 
         public void SetFunction<T1,T2,T3,T4,T5,TResult>(string name,Func<T1,T2,T3,T4,T5,TResult> callback, Func<T1,T2,T3,T4,T5,TResult> constructCallback=null)
         {
-            converter.RegisterFunctionConverter<T1,T2,T3,T4,T5,TResult>();
+            Converter.RegisterFunctionConverter<T1,T2,T3,T4,T5,TResult>();
             if (callback==null &&constructCallback==null)
             {
                 throw new ArgumentException("callback and constructCallback cannot both be null");
@@ -271,20 +316,20 @@ public partial class JSValueBinding
                    }
                    return result;
                };
-            valueService.WriteProperty<Func<bool, T1,T2,T3,T4,T5,TResult>>(jsValue,name, tmp);
+            ValueService.WriteProperty<Func<bool, T1,T2,T3,T4,T5,TResult>>(_jsValue,name, tmp);
         }
 
 
 
         public void SetMethod<T1,T2,T3,T4,T5,T6>(string name,Action<T1,T2,T3,T4,T5,T6> a)
         {
-            converter.RegisterMethodConverter<T1,T2,T3,T4,T5,T6>();
-            valueService.WriteProperty<Action<T1,T2,T3,T4,T5,T6>>(jsValue,name, a);
+            Converter.RegisterMethodConverter<T1,T2,T3,T4,T5,T6>();
+            ValueService.WriteProperty<Action<T1,T2,T3,T4,T5,T6>>(_jsValue,name, a);
         }
 
         public void SetFunction<T1,T2,T3,T4,T5,T6,TResult>(string name,Func<T1,T2,T3,T4,T5,T6,TResult> callback, Func<T1,T2,T3,T4,T5,T6,TResult> constructCallback=null)
         {
-            converter.RegisterFunctionConverter<T1,T2,T3,T4,T5,T6,TResult>();
+            Converter.RegisterFunctionConverter<T1,T2,T3,T4,T5,T6,TResult>();
             if (callback==null &&constructCallback==null)
             {
                 throw new ArgumentException("callback and constructCallback cannot both be null");
@@ -316,20 +361,20 @@ public partial class JSValueBinding
                    }
                    return result;
                };
-            valueService.WriteProperty<Func<bool, T1,T2,T3,T4,T5,T6,TResult>>(jsValue,name, tmp);
+            ValueService.WriteProperty<Func<bool, T1,T2,T3,T4,T5,T6,TResult>>(_jsValue,name, tmp);
         }
 
 
 
         public void SetMethod<T1,T2,T3,T4,T5,T6,T7>(string name,Action<T1,T2,T3,T4,T5,T6,T7> a)
         {
-            converter.RegisterMethodConverter<T1,T2,T3,T4,T5,T6,T7>();
-            valueService.WriteProperty<Action<T1,T2,T3,T4,T5,T6,T7>>(jsValue,name, a);
+            Converter.RegisterMethodConverter<T1,T2,T3,T4,T5,T6,T7>();
+            ValueService.WriteProperty<Action<T1,T2,T3,T4,T5,T6,T7>>(_jsValue,name, a);
         }
 
         public void SetFunction<T1,T2,T3,T4,T5,T6,T7,TResult>(string name,Func<T1,T2,T3,T4,T5,T6,T7,TResult> callback, Func<T1,T2,T3,T4,T5,T6,T7,TResult> constructCallback=null)
         {
-            converter.RegisterFunctionConverter<T1,T2,T3,T4,T5,T6,T7,TResult>();
+            Converter.RegisterFunctionConverter<T1,T2,T3,T4,T5,T6,T7,TResult>();
             if (callback==null &&constructCallback==null)
             {
                 throw new ArgumentException("callback and constructCallback cannot both be null");
@@ -361,7 +406,7 @@ public partial class JSValueBinding
                    }
                    return result;
                };
-            valueService.WriteProperty<Func<bool, T1,T2,T3,T4,T5,T6,T7,TResult>>(jsValue,name, tmp);
+            ValueService.WriteProperty<Func<bool, T1,T2,T3,T4,T5,T6,T7,TResult>>(_jsValue,name, tmp);
         }
 
 

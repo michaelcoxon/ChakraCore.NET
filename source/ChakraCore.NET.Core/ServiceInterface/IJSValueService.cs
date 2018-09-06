@@ -1,15 +1,13 @@
 ﻿
 using ChakraCore.NET.API;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ChakraCore.NET
 {
     /// <summary>
     /// Provides javascript value manipulation service
     /// </summary>
-    public interface IJSValueService:IService
+    public interface IJSValueService : IService
     {
         /// <summary>
         /// Read a property from a <see cref="JavaScriptValue" and convert the result to a specified type/>
@@ -27,7 +25,7 @@ namespace ChakraCore.NET
         /// <param name="target">Type of the value</param>
         /// <param name="id">Property id</param>
         /// <param name="value"></param>
-        void WriteProperty<T>(JavaScriptValue target,JavaScriptPropertyId id,T value);
+        void WriteProperty<T>(JavaScriptValue target, JavaScriptPropertyId id, T value);
 
         /// <summary>
         /// Read a property from a <see cref="JavaScriptValue" and convert the result to a specified type/>
@@ -37,6 +35,14 @@ namespace ChakraCore.NET
         /// <param name="id">Property id</param>
         /// <returns>A user defined type converted from retrieved value</returns>
         T ReadProperty<T>(JavaScriptValue target, string id);
+        /// <summary>
+        /// Write a property to a <see cref="JavaScriptValue"/> with a specified type
+        /// </summary>
+        /// <typeparam name="T">Type of the property value</typeparam>
+        /// <param name="target">Type of the value</param>
+        /// <param name="id">Property id</param>
+        /// <param name="value"></param>
+        void WriteProperty(JavaScriptValue target, string id, Type type, object value);
         /// <summary>
         /// Write a property to a <see cref="JavaScriptValue"/> with a specified type
         /// </summary>
