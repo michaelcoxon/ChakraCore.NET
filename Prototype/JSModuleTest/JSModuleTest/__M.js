@@ -1,1 +1,0 @@
-import {abc} from 'Module1.js'; _output=new abc();
