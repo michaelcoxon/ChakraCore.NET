@@ -9,8 +9,11 @@
     <RepositoryUrl>https://github.com/JohnMasen/ChakraCore.NET</RepositoryUrl>
     <PackageProjectUrl>https://github.com/JohnMasen/ChakraCore.NET</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/JohnMasen/ChakraCore.NET/blob/master/LICENSE</PackageLicenseUrl>
-    <Description>A lightweight chakracore wrapper to support scripting in dotnetcore application.
-this package contains dotnet ArrayBuffer, TypedArray &amp; DataView implementation</Description>
+    <Description>A lightweight chakracore wrapper to support scripting in dotnetcore application. this package contains dotnet ArrayBuffer, TypedArray &amp; DataView implementation</Description>
+    <VersionPrefix>1.1.0</VersionPrefix>
+    <VersionSuffix>$(VersionSuffix)</VersionSuffix>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
   </PropertyGroup>
 
   <ItemGroup>
