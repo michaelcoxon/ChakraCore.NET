@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace ChakraCore.NET
 {
@@ -26,14 +25,14 @@ namespace ChakraCore.NET
             service.RegisterConverter<T>(
                 (node, value) =>
                 {
-                    JavaScriptValue jsObj = node.GetService<IJSValueService>().CreateObject();
-                    JSValue v = new JSValue(node, jsObj);
+                    var jsObj = node.GetService<IJSValueService>().CreateObject();
+                    var v = new JSValue(node, jsObj);
                     toJSValue(v, value);
                     return jsObj;
                 },
                 (node, value) =>
                 {
-                    JSValue v = new JSValue(node, value);
+                    var v = new JSValue(node, value);
                     return fromJSValue(v);
                 }
                 );
@@ -46,9 +45,9 @@ namespace ChakraCore.NET
             {
                 return node.GetService<IContextSwitchService>().With(() =>
                 {
-                    var result = JavaScriptValue.CreateExternalObject(IntPtr.Zero,null);
-                    JSValueBinding binding = new JSValueBinding(node, result);
-                    var handle=node.GetService<IGCSyncService>().SyncWithJsValue(value, result);
+                    var result = JavaScriptValue.CreateExternalObject(IntPtr.Zero, null);
+                    var binding = new JSValueBinding(node, result);
+                    var handle = node.GetService<IGCSyncService>().SyncWithJsValue(value, result);
                     result.ExternalData = GCHandle.ToIntPtr(handle);//save the object reference to javascript values's external data
                     createBinding?.Invoke(binding, value, node);
                     return result;
@@ -59,7 +58,7 @@ namespace ChakraCore.NET
             {
                 if (value.HasExternalData)
                 {
-                    GCHandle handle = GCHandle.FromIntPtr(value.ExternalData);
+                    var handle = GCHandle.FromIntPtr(value.ExternalData);
                     return handle.Target as T;
                 }
                 else
@@ -71,6 +70,38 @@ namespace ChakraCore.NET
             service.RegisterConverter<T>(tojs, fromjs);
         }
 
+        public static void RegisterProxyConverter(this IJSValueConverterService service, Type type, Action<JSValueBinding, object, IServiceNode> createBinding)
+        {
+
+            JavaScriptValue tojs(IServiceNode node, object value)
+            {
+                return node.GetService<IContextSwitchService>().With(() =>
+                {
+                    var result = JavaScriptValue.CreateExternalObject(IntPtr.Zero, null);
+                    var binding = new JSValueBinding(node, result);
+                    var handle = node.GetService<IGCSyncService>().SyncWithJsValue(value, result);
+                    result.ExternalData = GCHandle.ToIntPtr(handle);//save the object reference to javascript values's external data
+                    createBinding?.Invoke(binding, value, node);
+                    return result;
+                });
+
+            }
+            object fromjs(IServiceNode node, JavaScriptValue value)
+            {
+                if (value.HasExternalData)
+                {
+                    var handle = GCHandle.FromIntPtr(value.ExternalData);
+                    return handle.Target;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("Convert from jsValue to proxy object failed, jsValue does not have a linked CLR object");
+                }
+
+            }
+            service.RegisterConverter(type, tojs, fromjs);
+        }
+
         public static void RegisterArrayConverter<T>(this IJSValueConverterService service)
         {
             toJSValueDelegate<IEnumerable<T>> tojs = (node, value) =>
@@ -78,8 +109,8 @@ namespace ChakraCore.NET
                 return node.WithContext<JavaScriptValue>(() =>
                 {
                     var result = node.GetService<IJSValueService>().CreateArray(Convert.ToUInt32(value.Count()));
-                    int index = 0;
-                    foreach (T item in value)
+                    var index = 0;
+                    foreach (var item in value)
                     {
                         result.SetIndexedProperty(service.ToJSValue<int>(index++), service.ToJSValue<T>(item));
                     }
@@ -93,8 +124,8 @@ namespace ChakraCore.NET
                 {
                     var jsValueService = node.GetService<IJSValueService>();
                     var length = service.FromJSValue<int>(value.GetProperty(JavaScriptPropertyId.FromString("length")));
-                    List<T> result = new List<T>(length);//copy the data to avoid context switch in user code
-                    for (int i = 0; i < length; i++)
+                    var result = new List<T>(length);//copy the data to avoid context switch in user code
+                    for (var i = 0; i < length; i++)
                     {
                         result.Add(
                             service.FromJSValue<T>(value.GetIndexedProperty(
