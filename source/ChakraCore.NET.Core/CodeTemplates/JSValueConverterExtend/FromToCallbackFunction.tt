@@ -4,17 +4,17 @@
     for (int i = startFrom; i <= totalItems; i++)
     {
       #>
-        private static Func<<#=genCode(i,"T{1}",true,",","{0}")#>> fromJSCallbackFunction<#=genCode(i,"T{1}",true)#>(IServiceNode node, JavaScriptValue value)
+        private static Func<<#=genCode(i,"T{1}",true,",","{0}")#>> FromJSCallbackFunction<#=genCode(i,"T{1}",true)#>(IServiceNode node, JavaScriptValue value)
         {
             return (<#=genCode(i,"T{1} para{1}",false,",","{0}")#>) =>
             {
-                return fromJSFunction<#=genCode(i,"T{1}",true)#>(node, value)(false<#=genCode(i,",para{1}",false,"","{0}")#>);
+                return FromJSFunction<#=genCode(i,"T{1}",true)#>(node, value)(false<#=genCode(i,",para{1}",false,"","{0}")#>);
             };
         }
 
-        private static JavaScriptValue toJSCallbackFunction<#=genCode(i,"T{1}",true)#> (IServiceNode node, Func<<#=genCode(i,"T{1}",true,",","{0}")#>> callback)
+        private static JavaScriptValue ToJSCallbackFunction<#=genCode(i,"T{1}",true)#> (IServiceNode node, Func<<#=genCode(i,"T{1}",true,",","{0}")#>> callback)
         {
-            return toJSFunction<#=genCode(i,"T{1}",true)#>(node, (b<#=genCode(i,",para{1}",false,"","{0}")#>) =>
+            return ToJSFunction<#=genCode(i,"T{1}",true)#>(node, (b<#=genCode(i,",para{1}",false,"","{0}")#>) =>
               {
                   return callback(<#=genCode(i,"para{1}",false,",","{0}")#>);
               }

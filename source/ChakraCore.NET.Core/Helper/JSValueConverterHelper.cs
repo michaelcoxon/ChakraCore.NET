@@ -10,6 +10,17 @@ namespace ChakraCore.NET
 {
     public static partial class JSValueConverterHelper
     {
+        public static void RegisterMethodConverter(this IJSValueConverterService service, Delegate action)
+        {
+            var actionType = action.GetType();
+
+            if (service.CanConvert(actionType))
+            {
+                return;
+            }
+            service.RegisterConverter(actionType, ToJSMethod, FromJSMethod, false);
+        }
+
         public static void RegisterStructConverter<T>(this IJSValueConverterService service, Action<JSValue, T> toJSValue, Func<JSValue, T> fromJSValue) where T : struct
         {
             service.RegisterConverter<T>(
@@ -96,6 +107,40 @@ namespace ChakraCore.NET
                 );
             };
             service.RegisterConverter<IEnumerable<T>>(tojs, fromjs, false);
+        }
+
+
+        private static JavaScriptValue ToJSMethod(IServiceNode node, object a)
+        {
+            var action = (Delegate)a;
+            var parameters = action.Method.GetParameters();
+
+            var converter = node.GetService<IJSValueConverterService>();
+            var jsValueService = node.GetService<IJSValueService>();
+            JavaScriptValue f(JavaScriptValue callee, bool isConstructCall, JavaScriptValue[] arguments, ushort argumentCount, IntPtr callbackData)
+            {
+                if (argumentCount != parameters.Length + 1)
+                {
+                    throw new InvalidOperationException("call from javascript did not pass enough parameters");
+                }
+                var args = new List<object>();
+
+                for (var i = 0; i < parameters.Length; i++)
+                {
+                    args.Add(converter.FromJSValue(parameters[i].ParameterType, arguments[i + 1]));
+                    arguments[i + 1].AddRef();
+                }
+
+                action.DynamicInvoke(args.ToArray());
+
+                for (var i = 0; i < parameters.Length; i++)
+                {
+                    arguments[i + 1].Release();
+                }
+                return jsValueService.JSValue_Undefined;
+            }
+
+            return jsValueService.CreateFunction(f, IntPtr.Zero);
         }
     }
 }

@@ -1,77 +1,101 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ChakraCore.NET.API;
+﻿using ChakraCore.NET.API;
+using System;
 
 namespace ChakraCore.NET
 {
     public class JSValueService : ServiceBase, IJSValueService
     {
-        public JavaScriptValue JSValue_Undefined => contextSwitch.With<JavaScriptValue>(() =>
+        public JavaScriptValue JSValue_Undefined => this.contextSwitch.With<JavaScriptValue>(() =>
         {
-            Native.ThrowIfError(Native.JsGetUndefinedValue(out JavaScriptValue result));
+            Native.ThrowIfError(Native.JsGetUndefinedValue(out var result));
             return result;
         });
 
-        public JavaScriptValue JSValue_Null => contextSwitch.With<JavaScriptValue>(() =>
+        public JavaScriptValue JSValue_Null => this.contextSwitch.With<JavaScriptValue>(() =>
         {
-            Native.ThrowIfError(Native.JsGetUndefinedValue(out JavaScriptValue result));
+            Native.ThrowIfError(Native.JsGetUndefinedValue(out var result));
             return result;
         });
 
-        public JavaScriptValue JSValue_True => contextSwitch.With<JavaScriptValue>(() =>
+        public JavaScriptValue JSValue_True => this.contextSwitch.With<JavaScriptValue>(() =>
         {
-            Native.ThrowIfError(Native.JsGetTrueValue(out JavaScriptValue result));
+            Native.ThrowIfError(Native.JsGetTrueValue(out var result));
             return result;
         });
 
-        public JavaScriptValue JSValue_False => contextSwitch.With<JavaScriptValue>(() =>
+        public JavaScriptValue JSValue_False => this.contextSwitch.With<JavaScriptValue>(() =>
         {
-            Native.ThrowIfError(Native.JsGetFalseValue(out JavaScriptValue result));
+            Native.ThrowIfError(Native.JsGetFalseValue(out var result));
             return result;
         });
 
-        public JavaScriptValue JSGlobalObject => contextSwitch.With<JavaScriptValue>(() =>
+        public JavaScriptValue JSGlobalObject => this.contextSwitch.With<JavaScriptValue>(() =>
         {
-            Native.ThrowIfError(Native.JsGetGlobalObject(out JavaScriptValue result));
+            Native.ThrowIfError(Native.JsGetGlobalObject(out var result));
             return result;
         });
+
+        public object ReadProperty(JavaScriptValue target, JavaScriptPropertyId id, Type type)
+        {
+            return this.contextSwitch.With(() => this.converter.FromJSValue(type, target.GetProperty(id)));
+        }
+
         public T ReadProperty<T>(JavaScriptValue target, JavaScriptPropertyId id)
         {
-            return contextSwitch.With<T>(
+            return this.contextSwitch.With<T>(
                 () =>
                 {
-                    return converter.FromJSValue<T>( target.GetProperty(id));
+                    return this.converter.FromJSValue<T>(target.GetProperty(id));
                 });
-                ;
+            ;
         }
 
         public void WriteProperty<T>(JavaScriptValue target, JavaScriptPropertyId id, T value)
         {
-            contextSwitch.With(
+            this.contextSwitch.With(
                 () =>
                 {
-                    target.SetProperty(id, converter.ToJSValue<T>(value),true);
+                    target.SetProperty(id, this.converter.ToJSValue<T>(value), true);
+                });
+
+            ;
+        }
+        public void WriteProperty(JavaScriptValue target, JavaScriptPropertyId id, Type type, object value)
+        {
+            this.contextSwitch.With(
+                () =>
+                {
+                    target.SetProperty(id, this.converter.ToJSValue(type, value), true);
                 });
 
             ;
         }
 
-        public T ReadProperty<T>(JavaScriptValue target, string id)
+        public object ReadProperty(JavaScriptValue target, string id, Type type)
         {
-            return contextSwitch.With<T>(
+            return this.contextSwitch.With<object>(
                 () =>
                 {
-                    return converter.FromJSValue<T>(target.GetProperty(JavaScriptPropertyId.FromString(id) ));
+                    return this.converter.FromJSValue(type, target.GetProperty(JavaScriptPropertyId.FromString(id)));
+                });
+            ;
+        }
+
+        public T ReadProperty<T>(JavaScriptValue target, string id)
+        {
+            return this.contextSwitch.With<T>(
+                () =>
+                {
+                    return this.converter.FromJSValue<T>(target.GetProperty(JavaScriptPropertyId.FromString(id)));
                 });
             ;
         }
 
         public void WriteProperty(JavaScriptValue target, string id, Type type, object value)
         {
-            contextSwitch.With(() =>
+            this.contextSwitch.With(() =>
             {
-                target.SetProperty(JavaScriptPropertyId.FromString(id), converter.ToJSValue(type, value), true);
+                target.SetProperty(JavaScriptPropertyId.FromString(id), this.converter.ToJSValue(type, value), true);
             });
 
             ;
@@ -79,19 +103,19 @@ namespace ChakraCore.NET
 
         public void WriteProperty<T>(JavaScriptValue target, string id, T value)
         {
-            contextSwitch.With(() =>
+            this.contextSwitch.With(() =>
                 {
-                    target.SetProperty(JavaScriptPropertyId.FromString(id), converter.ToJSValue<T>(value), true);
+                    target.SetProperty(JavaScriptPropertyId.FromString(id), this.converter.ToJSValue<T>(value), true);
                 });
 
             ;
         }
         public JavaScriptValue CreateFunction(JavaScriptNativeFunction function, IntPtr callbackData)
         {
-            return contextSwitch.With<JavaScriptValue>(() =>
+            return this.contextSwitch.With<JavaScriptValue>(() =>
             {
-                var result= JavaScriptValue.CreateFunction(function, callbackData);
-                serviceNode.GetService<IGCSyncService>().SyncWithJsValue(function,result);//keep delegate alive until related javascript value is released
+                var result = JavaScriptValue.CreateFunction(function, callbackData);
+                this.serviceNode.GetService<IGCSyncService>().SyncWithJsValue(function, result);//keep delegate alive until related javascript value is released
                 return result;
             });
 
@@ -99,7 +123,7 @@ namespace ChakraCore.NET
 
         public JavaScriptValue CreateObject()
         {
-            return contextSwitch.With<JavaScriptValue>(() =>
+            return this.contextSwitch.With<JavaScriptValue>(() =>
             {
                 return JavaScriptValue.CreateObject();
             });
@@ -107,7 +131,7 @@ namespace ChakraCore.NET
 
         public JavaScriptValue CreateExternalObject(IntPtr data, JavaScriptObjectFinalizeCallback finalizeCallback)
         {
-            return contextSwitch.With<JavaScriptValue>(() =>
+            return this.contextSwitch.With<JavaScriptValue>(() =>
             {
                 return JavaScriptValue.CreateExternalObject(data, finalizeCallback);
             });
@@ -115,7 +139,7 @@ namespace ChakraCore.NET
 
         public JavaScriptValue CallFunction(JavaScriptValue target, params JavaScriptValue[] para)
         {
-            return contextSwitch.With<JavaScriptValue>(() =>
+            return this.contextSwitch.With<JavaScriptValue>(() =>
             {
                 return target.CallFunction(para);
             });
@@ -123,7 +147,7 @@ namespace ChakraCore.NET
 
         public JavaScriptValue ConstructObject(JavaScriptValue target, params JavaScriptValue[] para)
         {
-            return contextSwitch.With<JavaScriptValue>(() =>
+            return this.contextSwitch.With<JavaScriptValue>(() =>
             {
                 return target.ConstructObject(para);
             });
@@ -131,7 +155,7 @@ namespace ChakraCore.NET
 
         public JavaScriptValue CreateArray(uint length)
         {
-            return contextSwitch.With<JavaScriptValue>(() =>
+            return this.contextSwitch.With<JavaScriptValue>(() =>
             {
                 return JavaScriptValue.CreateArray(length);
             });
@@ -139,8 +163,8 @@ namespace ChakraCore.NET
 
         public bool HasProperty(JavaScriptValue target, JavaScriptPropertyId id)
         {
-            
-            return contextSwitch.With<bool>(() =>
+
+            return this.contextSwitch.With<bool>(() =>
             {
                 return target.HasProperty(id);
             });
@@ -148,7 +172,7 @@ namespace ChakraCore.NET
 
         public bool HasProperty(JavaScriptValue target, string id)
         {
-            return contextSwitch.With<bool>(() =>
+            return this.contextSwitch.With<bool>(() =>
             {
                 return target.HasProperty(JavaScriptPropertyId.FromString(id));
             });
@@ -156,9 +180,9 @@ namespace ChakraCore.NET
 
         public void ThrowIfErrorValue(JavaScriptValue value)
         {
-            if (value.IsValid && value.ValueType==JavaScriptValueType.Error)
+            if (value.IsValid && value.ValueType == JavaScriptValueType.Error)
             {
-                string message = ReadProperty<string>(value, "description");
+                var message = this.ReadProperty<string>(value, "description");
                 throw new JavaScriptFatalException(JavaScriptErrorCode.Fatal, message);
             }
         }

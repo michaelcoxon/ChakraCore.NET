@@ -6,13 +6,13 @@
       #>
         public void SetMethod<#=genCode(i,"T{1}")#>(string name,Action<#=genCode(i,"T{1}")#> a)
         {
-            converter.RegisterMethodConverter<#=genCode(i,"T{1}")#>();
-            valueService.WriteProperty<Action<#=genCode(i,"T{1}")#>>(jsValue,name, a);
+            this.Converter.RegisterMethodConverter<#=genCode(i,"T{1}")#>();
+            this.ValueService.WriteProperty<Action<#=genCode(i,"T{1}")#>>(this._jsValue,name, a);
         }
 
         public void SetFunction<#=genCode(i,"T{1}",true)#>(string name,Func<#=genCode(i,"T{1}",true)#> callback, Func<#=genCode(i,"T{1}",true)#> constructCallback=null)
         {
-            converter.RegisterFunctionConverter<#=genCode(i,"T{1}",true)#>();
+            this.Converter.RegisterFunctionConverter<#=genCode(i,"T{1}",true)#>();
             if (callback==null &&constructCallback==null)
             {
                 throw new ArgumentException("callback and constructCallback cannot both be null");
@@ -44,7 +44,7 @@
                    }
                    return result;
                };
-            valueService.WriteProperty<Func<bool, <#=genCode(i,"T{1}",true,",","{0}")#>>>(jsValue,name, tmp);
+            this.ValueService.WriteProperty<Func<bool, <#=genCode(i,"T{1}",true,",","{0}")#>>>(this._jsValue,name, tmp);
         }
 
 

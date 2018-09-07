@@ -6,15 +6,15 @@
       #>
         public void CallMethod<#=genCode(i,"T{1}")#>(string name <#=genCode(i,",T{1} para{1}",false,"","{0}")#>)
         {
-            converter.RegisterMethodConverter<#=genCode(i,"T{1}")#>();
-            var a = valueService.ReadProperty<Action<#=genCode(i,"T{1}")#>>(ReferenceValue,name);
+            this.Converter.RegisterMethodConverter<#=genCode(i,"T{1}")#>();
+            var a = this.ValueService.ReadProperty<Action<#=genCode(i,"T{1}")#>>(ReferenceValue,name);
             a(<#=genCode(i,"para{1}",false,",","{0}")#>);
         }
 
         public TResult CallFunction<#=genCode(i,"T{1}",true)#>(string name <#=genCode(i,",T{1} para{1}",false,"","{0}")#>, bool isConstructCall=false)
         {
-            converter.RegisterFunctionConverter<#=genCode(i,"T{1}",true)#>();
-            var a = valueService.ReadProperty<Func<bool <#=genCode(i,",T{1}",false,"","{0}")#>,TResult>>(ReferenceValue,name);
+            this.Converter.RegisterFunctionConverter<#=genCode(i,"T{1}",true)#>();
+            var a = this.ValueService.ReadProperty<Func<bool <#=genCode(i,",T{1}",false,"","{0}")#>,TResult>>(ReferenceValue,name);
             return a(isConstructCall<#=genCode(i,",para{1}",false,"","{0}")#>);
         }
 

@@ -8,7 +8,7 @@ namespace ChakraCore.NET
 public static partial class JSValueConverterHelper
 {
 
-        private static JavaScriptValue toJSFunction<TResult> (IServiceNode node, Func<bool,TResult> callback)
+        private static JavaScriptValue ToJSFunction<TResult> (IServiceNode node, Func<bool,TResult> callback)
         {
             var converter = node.GetService<IJSValueConverterService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
@@ -30,7 +30,7 @@ public static partial class JSValueConverterHelper
 
         
 
-        private static Func<bool,TResult> fromJSFunction<TResult>(IServiceNode node, JavaScriptValue value)
+        private static Func<bool,TResult> FromJSFunction<TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
@@ -63,7 +63,7 @@ public static partial class JSValueConverterHelper
 
 
 
-        private static JavaScriptValue toJSFunction<T1,TResult> (IServiceNode node, Func<bool,T1,TResult> callback)
+        private static JavaScriptValue ToJSFunction<T1,TResult> (IServiceNode node, Func<bool,T1,TResult> callback)
         {
             var converter = node.GetService<IJSValueConverterService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
@@ -85,7 +85,7 @@ public static partial class JSValueConverterHelper
 
         
 
-        private static Func<bool,T1,TResult> fromJSFunction<T1,TResult>(IServiceNode node, JavaScriptValue value)
+        private static Func<bool,T1,TResult> FromJSFunction<T1,TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
@@ -118,7 +118,7 @@ public static partial class JSValueConverterHelper
 
 
 
-        private static JavaScriptValue toJSFunction<T1,T2,TResult> (IServiceNode node, Func<bool,T1,T2,TResult> callback)
+        private static JavaScriptValue ToJSFunction<T1,T2,TResult> (IServiceNode node, Func<bool,T1,T2,TResult> callback)
         {
             var converter = node.GetService<IJSValueConverterService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
@@ -143,7 +143,7 @@ arguments[2].Release();
 
         
 
-        private static Func<bool,T1,T2,TResult> fromJSFunction<T1,T2,TResult>(IServiceNode node, JavaScriptValue value)
+        private static Func<bool,T1,T2,TResult> FromJSFunction<T1,T2,TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
@@ -179,7 +179,7 @@ p2.Release();
 
 
 
-        private static JavaScriptValue toJSFunction<T1,T2,T3,TResult> (IServiceNode node, Func<bool,T1,T2,T3,TResult> callback)
+        private static JavaScriptValue ToJSFunction<T1,T2,T3,TResult> (IServiceNode node, Func<bool,T1,T2,T3,TResult> callback)
         {
             var converter = node.GetService<IJSValueConverterService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
@@ -207,7 +207,7 @@ arguments[3].Release();
 
         
 
-        private static Func<bool,T1,T2,T3,TResult> fromJSFunction<T1,T2,T3,TResult>(IServiceNode node, JavaScriptValue value)
+        private static Func<bool,T1,T2,T3,TResult> FromJSFunction<T1,T2,T3,TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
@@ -246,7 +246,7 @@ p3.Release();
 
 
 
-        private static JavaScriptValue toJSFunction<T1,T2,T3,T4,TResult> (IServiceNode node, Func<bool,T1,T2,T3,T4,TResult> callback)
+        private static JavaScriptValue ToJSFunction<T1,T2,T3,T4,TResult> (IServiceNode node, Func<bool,T1,T2,T3,T4,TResult> callback)
         {
             var converter = node.GetService<IJSValueConverterService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
@@ -277,7 +277,7 @@ arguments[4].Release();
 
         
 
-        private static Func<bool,T1,T2,T3,T4,TResult> fromJSFunction<T1,T2,T3,T4,TResult>(IServiceNode node, JavaScriptValue value)
+        private static Func<bool,T1,T2,T3,T4,TResult> FromJSFunction<T1,T2,T3,T4,TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
@@ -319,7 +319,7 @@ p4.Release();
 
 
 
-        private static JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,TResult> (IServiceNode node, Func<bool,T1,T2,T3,T4,T5,TResult> callback)
+        private static JavaScriptValue ToJSFunction<T1,T2,T3,T4,T5,TResult> (IServiceNode node, Func<bool,T1,T2,T3,T4,T5,TResult> callback)
         {
             var converter = node.GetService<IJSValueConverterService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
@@ -353,7 +353,7 @@ arguments[5].Release();
 
         
 
-        private static Func<bool,T1,T2,T3,T4,T5,TResult> fromJSFunction<T1,T2,T3,T4,T5,TResult>(IServiceNode node, JavaScriptValue value)
+        private static Func<bool,T1,T2,T3,T4,T5,TResult> FromJSFunction<T1,T2,T3,T4,T5,TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
@@ -398,7 +398,7 @@ p5.Release();
 
 
 
-        private static JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,T6,TResult> (IServiceNode node, Func<bool,T1,T2,T3,T4,T5,T6,TResult> callback)
+        private static JavaScriptValue ToJSFunction<T1,T2,T3,T4,T5,T6,TResult> (IServiceNode node, Func<bool,T1,T2,T3,T4,T5,T6,TResult> callback)
         {
             var converter = node.GetService<IJSValueConverterService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
@@ -435,7 +435,7 @@ arguments[6].Release();
 
         
 
-        private static Func<bool,T1,T2,T3,T4,T5,T6,TResult> fromJSFunction<T1,T2,T3,T4,T5,T6,TResult>(IServiceNode node, JavaScriptValue value)
+        private static Func<bool,T1,T2,T3,T4,T5,T6,TResult> FromJSFunction<T1,T2,T3,T4,T5,T6,TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();
@@ -483,7 +483,7 @@ p6.Release();
 
 
 
-        private static JavaScriptValue toJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult> (IServiceNode node, Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult> callback)
+        private static JavaScriptValue ToJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult> (IServiceNode node, Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult> callback)
         {
             var converter = node.GetService<IJSValueConverterService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
@@ -523,7 +523,7 @@ arguments[7].Release();
 
         
 
-        private static Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult> fromJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult>(IServiceNode node, JavaScriptValue value)
+        private static Func<bool,T1,T2,T3,T4,T5,T6,T7,TResult> FromJSFunction<T1,T2,T3,T4,T5,T6,T7,TResult>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();

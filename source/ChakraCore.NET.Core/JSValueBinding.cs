@@ -16,6 +16,10 @@ namespace ChakraCore.NET
             this._jsValue = value;
         }
 
-
+        public void SetMethod(string name, Delegate a)
+        {
+            this.Converter.RegisterMethodConverter(a);
+            this.ValueService.WriteProperty(this._jsValue, name, a.GetType(), a);
+        }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ChakraCore.NET.UnitTest
@@ -17,17 +14,17 @@ namespace ChakraCore.NET.UnitTest
         [TestMethod]
         public void BasicClassProject()
         {
-            var value = projectModuleClass("BasicExport", "TestClass");
-            var result=value.CallFunction<int, int>("Test1", 1);
+            var value = this.projectModuleClass("BasicExport", "TestClass");
+            var result = value.CallFunction<int, int>("Test1", 1);
             Assert.AreEqual(2, result);
         }
 
         [TestMethod]
         public void MultipleClassProject()
         {
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
-                var value = projectModuleClass("BasicExport", "TestClass");
+                var value = this.projectModuleClass("BasicExport", "TestClass");
                 var result = value.CallFunction<int, int>("Test1", 1);
                 Assert.AreEqual(2, result);
             }
@@ -36,7 +33,7 @@ namespace ChakraCore.NET.UnitTest
         [TestMethod]
         public void ImportExport()
         {
-            var value = projectModuleClass("BasicImport", "TestClass2");
+            var value = this.projectModuleClass("BasicImport", "TestClass2");
             var result = value.CallFunction<int, int>("Test2", 1);
             Assert.AreEqual(3, result);
         }
@@ -44,7 +41,7 @@ namespace ChakraCore.NET.UnitTest
         [TestMethod]
         public void NestedImport()
         {
-            var value = projectModuleClass("NestedImport0", "Test");
+            var value = this.projectModuleClass("NestedImport0", "Test");
             var result = value.CallFunction<int, int>("Test1", 1);
             Assert.AreEqual(2, result);
         }
@@ -53,9 +50,9 @@ namespace ChakraCore.NET.UnitTest
         [TestMethod]
         public async Task ModulePromiseAsync()
         {
-            context.ServiceNode.GetService<IJSValueConverterService>().RegisterTask<int>();
-            var c=projectModuleClass("ModulePromise", "test");
-            var tt = await c.CallFunction<int, Task<int>>("test1",1);
+            this.context.ServiceNode.GetService<IJSValueConverterService>().RegisterTask<int>();
+            var c = this.projectModuleClass("ModulePromise", "test");
+            var tt = await c.CallFunction<int, Task<int>>("test1", 1);
             Assert.AreEqual(2, tt);
         }
 

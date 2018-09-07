@@ -5,7 +5,7 @@
     {
       #>
 
-        private static JavaScriptValue toJSFunction<#=genCode(i,"T{1}",true)#> (IServiceNode node, Func<bool<#=genCode(i,",T{1}",false,"","{0}")#>,TResult> callback)
+        private static JavaScriptValue ToJSFunction<#=genCode(i,"T{1}",true)#> (IServiceNode node, Func<bool<#=genCode(i,",T{1}",false,"","{0}")#>,TResult> callback)
         {
             var converter = node.GetService<IJSValueConverterService>();
             JavaScriptNativeFunction f = (callee, isConstructCall, arguments, argumentCount, callbackData) =>
@@ -27,7 +27,7 @@
 
         
 
-        private static Func<bool,<#=genCode(i,"T{1}",true,",","{0}")#>> fromJSFunction<#=genCode(i,"T{1}",true)#>(IServiceNode node, JavaScriptValue value)
+        private static Func<bool,<#=genCode(i,"T{1}",true,",","{0}")#>> FromJSFunction<#=genCode(i,"T{1}",true)#>(IServiceNode node, JavaScriptValue value)
         {
             var converter = node.GetService<IJSValueConverterService>();
             var jsValueService = node.GetService<IJSValueService>();

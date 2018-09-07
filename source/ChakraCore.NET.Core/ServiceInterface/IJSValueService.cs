@@ -19,6 +19,24 @@ namespace ChakraCore.NET
         T ReadProperty<T>(JavaScriptValue target, JavaScriptPropertyId id);
 
         /// <summary>
+        /// Read a property from a <see cref="JavaScriptValue" and convert the result to a specified type/>
+        /// </summary>
+        /// <typeparam name="T">Type of result</typeparam>
+        /// <param name="target">The javascript object where to retrieve the property value</param>
+        /// <param name="id">Property id</param>
+        /// <returns>A user defined type converted from retrieved value</returns>
+        object ReadProperty(JavaScriptValue target, JavaScriptPropertyId id, Type type);
+
+        /// <summary>
+        /// Write a property to a <see cref="JavaScriptValue"/> with a specified type
+        /// </summary>
+        /// <typeparam name="T">Type of the property value</typeparam>
+        /// <param name="target">Type of the value</param>
+        /// <param name="id">Property id</param>
+        /// <param name="value"></param>
+        void WriteProperty(JavaScriptValue target, JavaScriptPropertyId id, Type type, object value);
+
+        /// <summary>
         /// Write a property to a <see cref="JavaScriptValue"/> with a specified type
         /// </summary>
         /// <typeparam name="T">Type of the property value</typeparam>
@@ -26,6 +44,15 @@ namespace ChakraCore.NET
         /// <param name="id">Property id</param>
         /// <param name="value"></param>
         void WriteProperty<T>(JavaScriptValue target, JavaScriptPropertyId id, T value);
+
+        /// <summary>
+        /// Read a property from a <see cref="JavaScriptValue" and convert the result to a specified type/>
+        /// </summary>
+        /// <typeparam name="T">Type of result</typeparam>
+        /// <param name="target">The javascript object where to retrieve the property value</param>
+        /// <param name="id">Property id</param>
+        /// <returns>A user defined type converted from retrieved value</returns>
+        object ReadProperty(JavaScriptValue target, string id, Type type);
 
         /// <summary>
         /// Read a property from a <see cref="JavaScriptValue" and convert the result to a specified type/>
